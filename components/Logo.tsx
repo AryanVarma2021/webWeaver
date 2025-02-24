@@ -15,7 +15,7 @@ const Logo = ({fontSize = "text-2xl", iconSize = 20} : {fontSize?:string ; iconS
             <span className='bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent'>
                 Web
             </span>
-            <span></span>
+            <span className='font-bold'>Weaver</span>
         </div>
     </Link>
   )

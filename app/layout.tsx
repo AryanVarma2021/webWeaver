@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
+import { AppProvider } from "@/components/providers/providers";
+import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,8 +23,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider appearance={{
+      elements : {formButtonPrimary : "bg-primary hover:bg-primary/90 text-sm !shadow-none "
+
+
+      },
+    }} afterSignOutUrl={"/sign-in"}>
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <AppProvider>{children}</AppProvider>
+
+        <Toaster richColors/>
+      </body>
+      
     </html>
+    </ClerkProvider>
   );
 }

@@ -57,4 +57,10 @@ const DesktopSidebar = () => {
   )
 }
 
+export function MobileSidebar() {
+   return <div className="">
+    Mobile Sidebar
+   </div>
+}
+
 export default DesktopSidebar
