@@ -1,9 +1,13 @@
 "use server"
 
 import prisma from "@/lib/prisma"
+import { CreateflowNode } from "@/lib/workflow/createflowNode"
 import { createWorkflowSchema, CreateWorkflowSchemaType } from "@/schema/workflow"
+import { AppNode } from "@/types/appNode"
+import { Tasktype } from "@/types/Tasktype"
 import { WorkflowStatus } from "@/types/workflow"
 import { auth } from "@clerk/nextjs/server"
+import { Edge } from "@xyflow/react"
 import { redirect } from "next/navigation"
 
 
@@ -24,14 +28,21 @@ export async function CreateWorkflow(form : CreateWorkflowSchemaType) {
         throw new Error("User not found")
     }
 
+    const initialFlow : {nodes : AppNode[], edges:Edge[]} = {
+        nodes : [],
+        edges : []
+    };
+
+    initialFlow.nodes.push(CreateflowNode(Tasktype.LAUNCH_BROWSER));
+
     const result = await prisma.workflow.create({
         data: {
             userId,
             status: WorkflowStatus.DRAFT,
-            definition: "TODO",
+            definition: JSON.stringify(initialFlow),
             name: validation.data.name,
             description: validation.data.description ?? "",
-        },
+        },  
     });
 
 
