@@ -7,7 +7,7 @@ import { BaseEdge, EdgeLabelRenderer, EdgeProps, getSmoothStepPath, Position, us
 export default function DeleteEdge(props : EdgeProps) {
     const [edgePath, labelX, labelY] = getSmoothStepPath(props)
 
-    const {setEdge} = useReactFlow();
+    const {setEdges} = useReactFlow();
 
 
     return (
@@ -18,19 +18,19 @@ export default function DeleteEdge(props : EdgeProps) {
     <div
         style={{
             position: "absolute",
-            transform : `translate(-50%, -50%) translate(4${labelX}px, ${labelY}px)`  ,
+            transform : `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`  ,
             pointerEvents : "all"
         }}
     >
         <Button variant={"outline"} size={"icon"} className="w-5 cursor-pointer rounded-full text-xs leading-none hover:shadow-lg  h-5 border" 
         onClick={()=>{
-            setEdge(edges => edges.filter((edge)=> edge.id !== props.id))
+            setEdges(edges => edges.filter((edge) => edge.id !== props.id))
 
         }}
         
         >
             X
-        //TODO 
+         
         </Button>
 
     </div>

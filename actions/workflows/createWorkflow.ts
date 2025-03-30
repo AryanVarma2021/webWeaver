@@ -51,7 +51,7 @@ export async function CreateWorkflow(form : CreateWorkflowSchemaType) {
     }
 
 
-    return redirect(`/workflows/editor/${result.id}`)
+     redirect(`/workflows/editor/${result.id}`)
 
     
     

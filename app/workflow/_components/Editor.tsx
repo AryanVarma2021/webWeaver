@@ -5,11 +5,13 @@ import {ReactFlowProvider} from "@xyflow/react"
 import FlowEditor from './FlowEditor';
 import TopBar from './topbar/TopBar';
 import TaskMenu from './TaskMenu';
+import { FlowValidationContextProvider } from '@/components/context/FlowValidationContext';
 
 
 
 const Editor = ({workflow} : {workflow : Workflow}) => {
   return (
+    <FlowValidationContextProvider>
 
     <ReactFlowProvider>
         <div className="flex flex-col h-full w-full overflow-hidden ">
@@ -20,6 +22,7 @@ const Editor = ({workflow} : {workflow : Workflow}) => {
             </section>
         </div>
     </ReactFlowProvider>
+    </FlowValidationContextProvider>
     
   )
 }

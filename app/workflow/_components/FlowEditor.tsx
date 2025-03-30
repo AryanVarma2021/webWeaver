@@ -1,6 +1,6 @@
 "use client";
 import { Workflow } from '@prisma/client';
-import { addEdge, Background, BackgroundVariant, Connection, Controls, ReactFlow, useEdgesState, useNodesState, useReactFlow, Edge } from '@xyflow/react';
+import { addEdge, Background, BackgroundVariant, Connection, Controls, ReactFlow, useEdgesState, useNodesState, useReactFlow, Edge, getOutgoers } from '@xyflow/react';
 import React, { useCallback, useEffect } from 'react'
 import "@xyflow/react/dist/style.css"
 import { CreateflowNode } from '@/lib/workflow/createflowNode';
@@ -8,6 +8,7 @@ import { Tasktype } from '@/types/Tasktype';
 import NodeComponent from './nodes/NodeComponent';
 import { AppNode } from '@/types/appNode';
 import DeleteEdge from './edges/DeleteEdge';
+import { TaskRegistry } from '@/lib/workflow/task/registry';
 
 
 
@@ -104,8 +105,45 @@ const FlowEditor = ({workflow}: {workflow : Workflow}) => {
     console.log(typeof connection.targetHandle, typeof connection.targetHandle);
   }, [nodes, setEdges, updateNodeData]); // Added `nodes` to the dependency array
 
+  const isValidConnection = useCallback((connection : Edge | Connection)=>{
 
-  console.log("out of : ", nodes);
+    const {sourceHandle, targetHandle, source, target} = connection;
+
+    if(source == target) return false;
+    const sourceNode = nodes.find((n) => n.id === connection.source);
+    const targetNode = nodes.find((n) => n.id === connection.target);
+
+    if(!sourceNode || !targetNode) return false;
+
+    const sourceType = TaskRegistry[sourceNode.data.type]
+    const targetType = TaskRegistry[targetNode.data.type]
+
+    const output = sourceType.outputs.find((o) => o.name === sourceHandle);
+    const input = targetType.inputs.find((i) => i.name === targetHandle);
+
+    if(!output || !input) return false;
+    if(output.type !== input.type) return false;
+    //if(sourceType === targetType) return false;
+    //if(sourceHandle === targetHandle) return false;
+
+
+    const hasCycle = (node:AppNode, visited = new Set()) => {
+      if (visited.has(node.id)) return false;
+
+      visited.add(node.id);
+
+      for (const outgoer of getOutgoers(node, nodes, edges)) {
+        if (outgoer.id === connection.source) return true;
+        if (hasCycle(outgoer, visited)) return true;
+      }
+    };
+
+    const cycle = hasCycle(targetNode);
+    return !cycle
+    
+
+  }, [nodes, edges])
+ 
   
 
 
@@ -126,6 +164,8 @@ const FlowEditor = ({workflow}: {workflow : Workflow}) => {
         snapGrid={snapGrid}
         fitViewOptions={fitViewOptions}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
+        
         >
 
             <Controls position='top-left' fitViewOptions={fitViewOptions} />

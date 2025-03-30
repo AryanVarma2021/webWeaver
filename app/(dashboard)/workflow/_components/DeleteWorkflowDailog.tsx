@@ -57,7 +57,9 @@ function DeleteWorkflowDailog({open, setOpen, WorkflowName, WorkflowId} : Props)
                 </div>
             </AlertDialogHeader>
             <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel onClick={()=>{
+                    setConfirmText("")
+                }}>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                  onClick={(e)=>{
                     e.stopPropagation();
